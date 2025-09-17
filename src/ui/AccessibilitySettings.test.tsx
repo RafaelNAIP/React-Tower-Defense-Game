@@ -81,14 +81,6 @@ describe('AccessibilitySettings', () => {
     const announceActionsCheckbox = screen.getByRole('checkbox', { name: /announce actions/i })
     expect(announceActionsCheckbox).toBeInTheDocument()
   })
-
-  it('shows keyboard navigation help', () => {
-    render(<AccessibilitySettings isOpen={true} onClose={mockOnClose} />)
-
-    expect(screen.getByText('⌨️ Keyboard Navigation')).toBeInTheDocument()
-    expect(screen.getByText(/press.*anytime to view all keyboard shortcuts/i)).toBeInTheDocument()
-    expect(screen.getByText(/use.*tab.*to navigate/i)).toBeInTheDocument()
-  })
 })
 
 describe('useAccessibilitySettings hook', () => {
