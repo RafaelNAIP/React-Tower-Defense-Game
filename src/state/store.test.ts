@@ -217,7 +217,7 @@ describe('Game Store', () => {
       id: 'test-tower',
       gridCoord: { x: 0, y: 0 },
       type: 'arrow' as const,
-      tier: 2,
+      tier: 2 as 1 | 2 | 3,
     }
 
     const sellValue = result.current.calculateSellValue(tower)

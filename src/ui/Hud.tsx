@@ -1,6 +1,4 @@
-import React from 'react';
 import { useGameStore } from '../state/store';
-import { GAME_CONFIG } from '../engine/definitions';
 
 export function Hud() {
   const {

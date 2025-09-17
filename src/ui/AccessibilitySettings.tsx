@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal } from './Modal';
 
 interface AccessibilitySettings {
@@ -159,7 +159,7 @@ export function LiveAnnouncer() {
 
   // Global function to make announcements
   useEffect(() => {
-    (window as any).announceToScreenReader = (message: string, priority: 'polite' | 'assertive' = 'polite') => {
+    (window as any).announceToScreenReader = (message: string) => {
       if (settings.announceActions) {
         setAnnouncement(message);
         setTimeout(() => setAnnouncement(''), 100); // Clear after brief moment

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useGameStore } from '../state/store';
 import { TOWER_DEFINITIONS, calculateTowerStats, getUpgradePreview } from '../engine/definitions';
 import type { TowerType } from '../engine/types';

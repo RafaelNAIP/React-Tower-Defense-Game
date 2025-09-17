@@ -1,4 +1,4 @@
-import type { Vec2, GridCoord, Tile, TileType } from './types';
+import type { Vec2, GridCoord, Tile } from './types';
 
 // ===== COORDINATE UTILITIES =====
 
@@ -41,23 +41,9 @@ export function distanceSquared(a: Vec2, b: Vec2): number {
 }
 
 /**
- * Calculate Manhattan distance between grid coordinates
- */
-export function manhattanDistance(a: GridCoord, b: GridCoord): number {
-  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-}
-
-/**
- * Check if two grid coordinates are equal
- */
-export function coordsEqual(a: GridCoord, b: GridCoord): boolean {
-  return a.x === b.x && a.y === b.y;
-}
-
-/**
  * Check if coordinate is within grid bounds
  */
-export function isValidCoord(coord: GridCoord, width: number, height: number): boolean {
+function isValidCoord(coord: GridCoord, width: number, height: number): boolean {
   return coord.x >= 0 && coord.x < width && coord.y >= 0 && coord.y < height;
 }
 
@@ -83,7 +69,7 @@ export function createMap(width: number, height: number): { map: Tile[][]; pathC
   // Create a simple path from left side to bottom
   // This is a basic L-shaped path that can be customized
   const pathCoords: GridCoord[] = [];
-  
+
   // Horizontal segment (left to middle)
   const pathY = Math.floor(height / 2);
   for (let x = 0; x < Math.floor(width * 0.7); x++) {
@@ -125,139 +111,6 @@ export function createMap(width: number, height: number): { map: Tile[][]; pathC
   });
 
   return { map, pathCoords };
-}
-
-// ===== PATHFINDING (A* Algorithm) =====
-
-type PathNode = {
-  coord: GridCoord;
-  gCost: number; // Distance from start
-  hCost: number; // Heuristic distance to goal
-  fCost: number; // Total cost (g + h)
-  parent: PathNode | null;
-};
-
-/**
- * Get neighboring coordinates (4-directional movement)
- */
-function getNeighbors(coord: GridCoord, width: number, height: number): GridCoord[] {
-  const neighbors: GridCoord[] = [];
-  const directions = [
-    { x: 0, y: -1 }, // Up
-    { x: 1, y: 0 },  // Right
-    { x: 0, y: 1 },  // Down
-    { x: -1, y: 0 }, // Left
-  ];
-
-  for (const dir of directions) {
-    const neighbor = { x: coord.x + dir.x, y: coord.y + dir.y };
-    if (isValidCoord(neighbor, width, height)) {
-      neighbors.push(neighbor);
-    }
-  }
-
-  return neighbors;
-}
-
-/**
- * A* pathfinding algorithm
- * Finds the shortest path between start and goal, avoiding blocked tiles
- */
-export function findPath(
-  start: GridCoord,
-  goal: GridCoord,
-  map: Tile[][],
-  allowedTypes: TileType[] = ['buildable', 'path']
-): GridCoord[] | null {
-  const width = map[0].length;
-  const height = map.length;
-
-  if (!isValidCoord(start, width, height) || !isValidCoord(goal, width, height)) {
-    return null;
-  }
-
-  const openList: PathNode[] = [];
-  const closedSet = new Set<string>();
-
-  // Helper function to create a unique key for coordinates
-  const coordKey = (coord: GridCoord) => `${coord.x},${coord.y}`;
-
-  // Create start node
-  const startNode: PathNode = {
-    coord: start,
-    gCost: 0,
-    hCost: manhattanDistance(start, goal),
-    fCost: manhattanDistance(start, goal),
-    parent: null,
-  };
-
-  openList.push(startNode);
-
-  while (openList.length > 0) {
-    // Find node with lowest fCost
-    let currentIndex = 0;
-    for (let i = 1; i < openList.length; i++) {
-      if (openList[i].fCost < openList[currentIndex].fCost) {
-        currentIndex = i;
-      }
-    }
-
-    const current = openList.splice(currentIndex, 1)[0];
-    closedSet.add(coordKey(current.coord));
-
-    // Check if we reached the goal
-    if (coordsEqual(current.coord, goal)) {
-      // Reconstruct path
-      const path: GridCoord[] = [];
-      let node: PathNode | null = current;
-      while (node !== null) {
-        path.unshift(node.coord);
-        node = node.parent;
-      }
-      return path;
-    }
-
-    // Check all neighbors
-    const neighbors = getNeighbors(current.coord, width, height);
-    for (const neighborCoord of neighbors) {
-      const key = coordKey(neighborCoord);
-
-      // Skip if already processed
-      if (closedSet.has(key)) continue;
-
-      // Skip if tile type is not allowed
-      const tile = map[neighborCoord.y][neighborCoord.x];
-      if (!allowedTypes.includes(tile.type)) continue;
-
-      const gCost = current.gCost + 1; // Each step costs 1
-      const hCost = manhattanDistance(neighborCoord, goal);
-      const fCost = gCost + hCost;
-
-      // Check if this neighbor is already in open list with better cost
-      const existingNode = openList.find(node => coordsEqual(node.coord, neighborCoord));
-      if (existingNode && gCost >= existingNode.gCost) continue;
-
-      // Create or update neighbor node
-      const neighborNode: PathNode = {
-        coord: neighborCoord,
-        gCost,
-        hCost,
-        fCost,
-        parent: current,
-      };
-
-      if (existingNode) {
-        // Update existing node
-        Object.assign(existingNode, neighborNode);
-      } else {
-        // Add new node to open list
-        openList.push(neighborNode);
-      }
-    }
-  }
-
-  // No path found
-  return null;
 }
 
 // ===== PATH UTILITIES =====
@@ -313,7 +166,7 @@ export function getPositionOnPath(
     if (currentDistance + segmentLength >= targetDistance) {
       // We're on this segment
       const segmentProgress = (targetDistance - currentDistance) / segmentLength;
-      
+
       return {
         x: segmentStart.x + (segmentEnd.x - segmentStart.x) * segmentProgress,
         y: segmentStart.y + (segmentEnd.y - segmentStart.y) * segmentProgress,
@@ -325,52 +178,4 @@ export function getPositionOnPath(
 
   // Fallback to end of path
   return gridToWorld(pathCoords[pathCoords.length - 1], tileSize);
-}
-
-/**
- * Check if a tile can be built on (is buildable and not occupied)
- */
-export function canBuildAt(
-  coord: GridCoord,
-  map: Tile[][],
-  existingTowers: { gridCoord: GridCoord }[]
-): boolean {
-  const width = map[0]?.length || 0;
-  const height = map.length;
-
-  // Check bounds
-  if (!isValidCoord(coord, width, height)) return false;
-
-  // Check tile type
-  const tile = map[coord.y][coord.x];
-  if (tile.type !== 'buildable') return false;
-
-  // Check if already occupied by a tower
-  return !existingTowers.some(tower => coordsEqual(tower.gridCoord, coord));
-}
-
-/**
- * Get all tiles within a certain range of a position
- */
-export function getTilesInRange(
-  center: GridCoord,
-  range: number,
-  width: number,
-  height: number
-): GridCoord[] {
-  const tiles: GridCoord[] = [];
-  
-  for (let y = center.y - range; y <= center.y + range; y++) {
-    for (let x = center.x - range; x <= center.x + range; x++) {
-      const coord = { x, y };
-      if (isValidCoord(coord, width, height)) {
-        const dist = manhattanDistance(center, coord);
-        if (dist <= range) {
-          tiles.push(coord);
-        }
-      }
-    }
-  }
-  
-  return tiles;
 }

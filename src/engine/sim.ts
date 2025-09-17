@@ -1,5 +1,5 @@
-import type { GameState, GameAction, Mob, Tower, Projectile, GameEvent, TowerType } from './types';
-import { GAME_CONFIG, MOB_DEFINITIONS, calculateMobStats, WAVE_DEFINITIONS, TOWER_DEFINITIONS, calculateTowerStats, calculateDamage } from './definitions';
+import type { GameState, Mob, Tower, Projectile, GameAction } from './types';
+import { GAME_CONFIG, MOB_DEFINITIONS, calculateMobStats, TOWER_DEFINITIONS, calculateTowerStats } from './definitions';
 import { getPositionOnPath, calculatePathLength, gridToWorld, distance } from './grid';
 import { updateMobEffects, getEffectiveSpeed, applyDamage, applySlow } from './effects';
 import { findTarget, canTowerAttack, getMobsInSplashRange } from './targeting';
@@ -25,7 +25,7 @@ export function advanceTick(state: GameState, deltaTime: number): GameState {
   newState = updateMobs(newState, deltaTime * state.gameSpeed);
   
   // Update towers (targeting and shooting)
-  newState = updateTowers(newState, deltaTime * state.gameSpeed);
+  newState = updateTowers(newState);
   
   // Update projectiles
   newState = updateProjectiles(newState, deltaTime * state.gameSpeed);
@@ -42,7 +42,7 @@ export function advanceTick(state: GameState, deltaTime: number): GameState {
 /**
  * Update towers - targeting and shooting
  */
-function updateTowers(state: GameState, deltaTime: number): GameState {
+function updateTowers(state: GameState): GameState {
   const updatedTowers: any[] = [];
   const newProjectiles: Projectile[] = [...state.projectiles];
 
@@ -569,76 +569,3 @@ export class GameLoop {
   };
 }
 
-/**
- * Utility functions for game calculations
- */
-
-export function isGameOver(state: GameState): boolean {
-  return state.lives <= 0;
-}
-
-export function isGameWon(state: GameState): boolean {
-  return state.currentWaveIndex >= state.waves.length && state.mobs.length === 0;
-}
-
-export function canStartNextWave(state: GameState): boolean {
-  return (
-    state.phase === 'between-waves' &&
-    state.currentWaveIndex < state.waves.length &&
-    state.mobs.length === 0
-  );
-}
-
-/**
- * Calculate total tower investment for stats
- */
-export function calculateTotalInvestment(towers: any[]): number {
-  // TODO: Implement based on tower costs and upgrades
-  // For now, return 0 - will implement when we have proper tower data
-  return 0;
-}
-
-/**
- * Get towers in range of a position
- */
-export function getTowersInRange(
-  position: { x: number; y: number },
-  range: number,
-  towers: any[]
-): any[] {
-  return towers.filter(tower => {
-    const dx = tower.pos.x - position.x;
-    const dy = tower.pos.y - position.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    return distance <= range;
-  });
-}
-
-/**
- * Check if two circles collide (for projectile-mob collision)
- */
-export function circleCollision(
-  pos1: { x: number; y: number },
-  radius1: number,
-  pos2: { x: number; y: number },
-  radius2: number
-): boolean {
-  const dx = pos1.x - pos2.x;
-  const dy = pos1.y - pos2.y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-  return distance <= radius1 + radius2;
-}
-
-/**
- * Interpolate between two values (for smooth rendering)
- */
-export function lerp(a: number, b: number, t: number): number {
-  return a + (b - a) * Math.max(0, Math.min(1, t));
-}
-
-/**
- * Clamp a value between min and max
- */
-export function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
-}

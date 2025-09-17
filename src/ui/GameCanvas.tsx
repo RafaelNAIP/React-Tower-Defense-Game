@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useGameStore } from '../state/store';
 import { GAME_CONFIG } from '../engine/definitions';
-import type { TowerType } from '../engine/types';
 import { createCanvasRenderer, CanvasRenderer } from '../renderers/canvas';
 
 interface GameCanvasProps {

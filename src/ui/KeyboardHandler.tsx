@@ -1,7 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
 import { useGameStore } from '../state/store';
-import { TOWER_DEFINITIONS } from '../engine/definitions';
-import type { TowerType } from '../engine/types';
 import { Modal } from './Modal';
 
 export function KeyboardHandler() {

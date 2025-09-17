@@ -380,7 +380,7 @@ export function calculateDamage(baseDamage: number, armor: number): number {
 /**
  * Check if a mob type is affected by slows (flying mobs might be immune in advanced versions)
  */
-export function canBeSlowed(mobType: string): boolean {
+export function canBeSlowed(): boolean {
   // For now, all mobs can be slowed
   // Later we could make flying mobs immune to ground-based slows
   return true;

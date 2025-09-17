@@ -46,7 +46,7 @@ describe('Tower Definitions', () => {
   })
 
   it('has valid tower definitions', () => {
-    Object.entries(TOWER_DEFINITIONS).forEach(([type, definition]) => {
+    Object.entries(TOWER_DEFINITIONS).forEach(([_, definition]) => {
       expect(definition.baseCost).toBeGreaterThan(0)
       expect(definition.damage).toBeGreaterThan(0)
       expect(definition.range).toBeGreaterThan(0)
@@ -75,7 +75,7 @@ describe('Mob Definitions', () => {
   })
 
   it('has valid mob definitions', () => {
-    Object.entries(MOB_DEFINITIONS).forEach(([type, definition]) => {
+    Object.entries(MOB_DEFINITIONS).forEach(([_, definition]) => {
       expect(definition.baseHp).toBeGreaterThan(0)
       expect(definition.baseSpeed).toBeGreaterThan(0)
       expect(definition.armor).toBeGreaterThanOrEqual(0)

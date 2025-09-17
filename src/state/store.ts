@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { GridCoord, TowerType, GameState, GamePhase } from '../engine/types';
+import type { GridCoord, TowerType, GameState } from '../engine/types';
 import { createMap } from '../engine/grid';
 import { GAME_CONFIG, calculateTowerStats, calculateUpgradeCost, TOWER_DEFINITIONS } from '../engine/definitions';
 import { GameLoop, advanceTick } from '../engine/sim';

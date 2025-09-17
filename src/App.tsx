@@ -70,7 +70,7 @@ function App() {
   };
 
   // Handle click to place tower or select existing tower
-  const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleClick = () => {
     if (!hoveredCoord) return;
 
     // Check if clicking on existing tower
