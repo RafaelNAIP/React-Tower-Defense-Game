@@ -26,7 +26,7 @@ describe('Tower Definitions', () => {
 
     expect(stats.damage).toBeGreaterThan(TOWER_DEFINITIONS.cannon.damage) // Should be upgraded
     expect(stats.range).toBeGreaterThan(TOWER_DEFINITIONS.cannon.range) // Range increases for tier 2
-    expect(stats.cost).toBe(TOWER_DEFINITIONS.cannon.baseCost) // Cost is base cost, not upgrade cost
+    expect(stats.cost).toBe(TOWER_DEFINITIONS.cannon.baseCost + 75) // Cost includes upgrade cost
   })
 
   it('calculates correct stats for tier 3 frost tower', () => {
