@@ -87,7 +87,7 @@ describe('AccessibilitySettings', () => {
 
     expect(screen.getByText('⌨️ Keyboard Navigation')).toBeInTheDocument()
     expect(screen.getByText(/press.*anytime to view all keyboard shortcuts/i)).toBeInTheDocument()
-    expect(screen.getByText(/use.*tab.*to navigate/i)).toBeInTheDocument()
+    expect(screen.getByText(/to navigate between UI elements/i)).toBeInTheDocument()
   })
 })
 

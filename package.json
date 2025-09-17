@@ -10,7 +10,14 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "test:e2e": "vitest run src/test/e2e.test.tsx src/test/app-e2e.test.tsx",
+    "test:performance": "vitest run src/test/performance.test.ts",
+    "test:performance:quick": "vitest run src/test/performance.test.ts -t \"Quick Performance Check\"",
+    "test:performance:standard": "vitest run src/test/performance.test.ts -t \"Standard Performance Test\"",
+    "test:performance:extended": "vitest run src/test/performance.test.ts -t \"Extended Stability Test\"",
+    "test:performance:marathon": "vitest run src/test/performance.test.ts -t \"Marathon Memory Test\"",
+    "test:performance:all": "vitest run src/test/performance.test.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",

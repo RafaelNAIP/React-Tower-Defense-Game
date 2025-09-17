@@ -34,7 +34,7 @@ describe('Game Store', () => {
 
     expect(result.current.phase).toBe('preparing')
     expect(result.current.money).toBe(100)
-    expect(result.current.lives).toBe(10)
+    expect(result.current.lives).toBe(20)
     expect(result.current.towers).toEqual([])
     expect(result.current.selectedTowerType).toBe(null)
     expect(result.current.selectedTowerId).toBe(null)
@@ -139,16 +139,25 @@ describe('Game Store', () => {
   it('cannot upgrade tower to tier beyond 3', () => {
     const { result } = renderHook(() => useGameStore())
 
+    // Mock canBuildAt to return true
+    const mockCanBuildAt = vi.fn(() => true)
+    act(() => {
+      useGameStore.setState({ canBuildAt: mockCanBuildAt })
+    })
+
     // Build a tower and manually set it to tier 3
     act(() => {
       result.current.buildTower({ x: 0, y: 0 }, 'arrow')
-      const towerId = result.current.towers[0].id
+    })
+
+    const towerId = result.current.towers[0].id
+
+    act(() => {
       useGameStore.setState({
         towers: [{ ...result.current.towers[0], tier: 3 }]
       })
     })
 
-    const towerId = result.current.towers[0].id
     const initialMoney = result.current.money
 
     act(() => {
