@@ -1,0 +1,203 @@
+import React from 'react';
+import { useGameStore } from '../state/store';
+import { GAME_CONFIG } from '../engine/definitions';
+
+export function GameStats() {
+  const {
+    money,
+    lives,
+    mobs,
+    towers,
+    projectiles,
+    pathCoords,
+    currentWaveIndex,
+    phase,
+  } = useGameStore();
+
+  // Get projectile visual properties
+  const getProjectileVisuals = (projectileType: string) => {
+    switch (projectileType) {
+      case 'arrow':
+        return { color: '#FFD700', size: 3 }; // Small golden dots
+      case 'cannonball':
+        return { color: '#FF4500', size: 6 }; // Larger orange balls
+      case 'frost':
+        return { color: '#00BFFF', size: 4 }; // Medium blue projectiles
+      default:
+        return { color: '#FFFFFF', size: 3 };
+    }
+  };
+
+  // Get mob color based on type
+  const getMobColor = (mobType: string): string => {
+    switch (mobType) {
+      case 'normal': return '#FF6B6B'; // Red
+      case 'fast': return '#4ECDC4';   // Teal
+      case 'tank': return '#45B7D1';   // Blue
+      case 'flying': return '#96CEB4'; // Light green
+      default: return '#FF6B6B';
+    }
+  };
+
+  // Get next wave info
+  const getNextWaveInfo = () => {
+    const nextWave = currentWaveIndex + 1;
+    if (nextWave > 10) return null;
+
+    const waveCompositions: Record<number, string> = {
+      1: "5 Goblins (Tutorial)",
+      2: "8 Goblins", 
+      3: "6 Goblins + 4 Wolves",
+      4: "8 Wolves + 4 Goblins",
+      5: "8 Goblins + 3 Orc Warriors",
+      6: "6 Goblins + 5 Wolves + 4 Bats",
+      7: "10 Wolves + 4 Orc Warriors + 6 Bats",
+      8: "8 Orc Warriors + 10 Goblins + 3 Bats", 
+      9: "15 Wolves + 10 Bats + 5 Orc Warriors",
+      10: "FINAL: 10 Orc Warriors + 15 Wolves + 12 Bats + 20 Goblins"
+    };
+
+    return {
+      wave: nextWave,
+      composition: waveCompositions[nextWave] || "Unknown"
+    };
+  };
+
+  const nextWaveInfo = getNextWaveInfo();
+
+  return (
+    <div className="space-y-4">
+      {/* Game Stats - Debug Info */}
+      <div className="bg-gray-800 p-4 rounded">
+        <h3 className="font-bold mb-2">Game Info</h3>
+        <div className="text-sm space-y-1">
+          <p>Path length: {pathCoords.length} tiles</p>
+          <p>Towers placed: {towers.length}</p>
+          <p>Total investment: ${GAME_CONFIG.startingMoney - money}</p>
+          <p>Active enemies: {mobs.length}</p>
+          <p>Active projectiles: {projectiles.length}</p>
+          <p>Lives remaining: {lives}/{GAME_CONFIG.startingLives}</p>
+          <div className="mt-2 text-xs text-gray-400">
+            <p>Debug Info:</p>
+            {mobs.slice(0, 3).map((mob: any, i) => (
+              <p key={i}>
+                Mob {i + 1}: {(mob.pathProgress * 100).toFixed(1)}% 
+                {mob.pathProgress >= 1 ? ' (REACHED END!)' : ''}
+              </p>
+            ))}
+            {mobs.length > 3 && <p>...and {mobs.length - 3} more</p>}
+          </div>
+        </div>
+      </div>
+
+      {/* Next Wave Preview */}
+      {nextWaveInfo && phase !== 'defeat' && phase !== 'victory' && (
+        <div className="bg-purple-900/20 p-4 rounded">
+          <h3 className="font-bold mb-2 text-purple-400">
+            🔮 Wave {nextWaveInfo.wave} Preview
+          </h3>
+          <p className="text-sm text-purple-300">
+            {nextWaveInfo.composition}
+          </p>
+          {nextWaveInfo.wave === 10 && (
+            <p className="text-xs text-yellow-300 mt-1">
+              ⚠️ Final boss wave! Prepare your strongest defenses!
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Wave Progress */}
+      <div className="bg-gray-800 p-4 rounded">
+        <h3 className="font-bold mb-2">Wave Progress</h3>
+        <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
+          <div 
+            className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+            style={{ width: `${(currentWaveIndex / 10) * 100}%` }}
+          ></div>
+        </div>
+        <div className="text-sm text-gray-300">
+          Completed: {currentWaveIndex}/10 waves
+          {currentWaveIndex >= 10 && (
+            <span className="text-yellow-400 ml-2">🏆 All waves complete!</span>
+          )}
+        </div>
+      </div>
+
+      {/* Combat System Info */}
+      <div className="bg-green-900/20 p-4 rounded">
+        <h3 className="font-bold mb-2 text-green-400">⚔️ Combat System Active!</h3>
+        <div className="text-sm space-y-1">
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-3 h-3 rounded-full" 
+              style={{ backgroundColor: getProjectileVisuals('arrow').color }}
+            ></div>
+            <span>Arrow projectiles (instant)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-3 h-3 rounded-full" 
+              style={{ backgroundColor: getProjectileVisuals('cannonball').color }}
+            ></div>
+            <span>Cannon balls (splash damage)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-3 h-3 rounded-full" 
+              style={{ backgroundColor: getProjectileVisuals('frost').color }}
+            ></div>
+            <span>Frost bolts (slow enemies)</span>
+          </div>
+          <p className="text-xs text-green-300 mt-2">
+            • Build towers to defend your base!<br/>
+            • Kill enemies to earn money<br/>
+            • Blue circles = slowed enemies
+          </p>
+        </div>
+      </div>
+
+      {/* Enemy Types Legend */}
+      <div className="bg-gray-800 p-4 rounded">
+        <h3 className="font-bold mb-2">Enemy Types</h3>
+        <div className="text-sm space-y-1">
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-4 h-4 rounded-full" 
+              style={{ backgroundColor: getMobColor('normal') }}
+            ></div>
+            <span>Normal - Balanced enemy</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-4 h-4 rounded-full" 
+              style={{ backgroundColor: getMobColor('fast') }}
+            ></div>
+            <span>Fast - Quick but fragile</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-4 h-4 rounded-full" 
+              style={{ backgroundColor: getMobColor('tank') }}
+            ></div>
+            <span>Tank - Slow but tough</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Controls Help */}
+      <div className="bg-gray-800 p-4 rounded">
+        <h3 className="font-bold mb-2">Controls</h3>
+        <ul className="text-sm space-y-1">
+          <li>• Select tower type from the build menu</li>
+          <li>• Click green tiles to build towers</li>
+          <li>• Click existing towers to select them</li>
+          <li>• Toggle range display with checkbox</li>
+          <li className="text-yellow-400">• Gold = Arrow Tower</li>
+          <li className="text-orange-400">• Orange = Cannon Tower</li>
+          <li className="text-blue-400">• Blue = Frost Tower</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
