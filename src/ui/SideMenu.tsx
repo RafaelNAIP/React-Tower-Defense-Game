@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useGameStore } from '../state/store';
 import { useAccessibilitySettings } from './AccessibilitySettings';
 import { GAME_CONFIG } from '../engine/definitions';
@@ -12,7 +12,7 @@ type MenuSection = 'help' | 'settings' | 'gameInfo' | 'controls';
 
 export function SideMenu({ isOpen, onClose }: SideMenuProps) {
   const [activeSection, setActiveSection] = useState<MenuSection>('help');
-  const { settings, updateSettings } = useAccessibilitySettings();
+  const { settings, updateSetting } = useAccessibilitySettings();
   const {
     money,
     lives,
@@ -120,7 +120,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
               <input
                 type="checkbox"
                 checked={settings.reduceMotion}
-                onChange={(e) => updateSettings({ reduceMotion: e.target.checked })}
+                onChange={(e) => updateSetting( 'reduceMotion', e.target.checked )}
                 className="rounded"
               />
             </label>
@@ -130,7 +130,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
               <input
                 type="checkbox"
                 checked={settings.highContrast}
-                onChange={(e) => updateSettings({ highContrast: e.target.checked })}
+                onChange={(e) => updateSetting( 'highContrast', e.target.checked )}
                 className="rounded"
               />
             </label>
@@ -140,7 +140,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
               <input
                 type="checkbox"
                 checked={settings.screenReaderMode}
-                onChange={(e) => updateSettings({ screenReaderMode: e.target.checked })}
+                onChange={(e) => updateSetting( 'screenReaderMode', e.target.checked )}
                 className="rounded"
               />
             </label>

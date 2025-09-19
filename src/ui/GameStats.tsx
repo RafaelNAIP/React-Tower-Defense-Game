@@ -13,31 +13,6 @@ export function GameStats() {
     phase,
   } = useGameStore();
 
-  // Get projectile visual properties
-  const getProjectileVisuals = (projectileType: string) => {
-    switch (projectileType) {
-      case 'arrow':
-        return { color: '#FFD700', size: 3 }; // Small golden dots
-      case 'cannonball':
-        return { color: '#FF4500', size: 6 }; // Larger orange balls
-      case 'frost':
-        return { color: '#00BFFF', size: 4 }; // Medium blue projectiles
-      default:
-        return { color: '#FFFFFF', size: 3 };
-    }
-  };
-
-  // Get mob color based on type
-  const getMobColor = (mobType: string): string => {
-    switch (mobType) {
-      case 'normal': return '#FF6B6B'; // Red
-      case 'fast': return '#4ECDC4';   // Teal
-      case 'tank': return '#45B7D1';   // Blue
-      case 'flying': return '#96CEB4'; // Light green
-      default: return '#FF6B6B';
-    }
-  };
-
   // Get next wave info
   const getNextWaveInfo = () => {
     const nextWave = currentWaveIndex + 1;

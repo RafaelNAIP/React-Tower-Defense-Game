@@ -9,6 +9,7 @@ export const GAME_CONFIG: GameConfig = {
   tickRate: 60, // 60 FPS simulation
   startingMoney: 100,
   startingLives: 20,
+  maxMoney: 9999,
 };
 
 // ===== TOWER DEFINITIONS =====

@@ -119,6 +119,7 @@ export type GameConfig = {
   tickRate: number; // ticks per second (e.g., 60)
   startingMoney: number;
   startingLives: number;
+  maxMoney: number;
 };
 
 export type GamePhase = 'preparing' | 'wave-active' | 'between-waves' | 'victory' | 'defeat';

@@ -5,12 +5,14 @@ interface AccessibilitySettings {
   reduceMotion: boolean;
   highContrast: boolean;
   announceActions: boolean;
+  screenReaderMode: boolean;
 }
 
 const defaultSettings: AccessibilitySettings = {
   reduceMotion: false,
   highContrast: false,
   announceActions: true,
+  screenReaderMode: false,
 };
 
 // Custom hook for accessibility settings
