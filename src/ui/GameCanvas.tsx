@@ -96,10 +96,11 @@ export function GameCanvas({ onMouseMove, onMouseLeave, onClick }: GameCanvasPro
       ref={canvasRef}
       width={canvasWidth}
       height={canvasHeight}
-      className="border border-gray-600 cursor-crosshair"
+      className="border border-gray-600 cursor-crosshair max-w-full h-auto"
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
+      style={{ maxWidth: '100%', height: 'auto' }}
     />
   );
 }

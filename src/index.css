@@ -4,8 +4,16 @@
 
 /* Custom game styles */
 @layer base {
+  .header-bg {
+    background-color: #3a405a;
+  }
   html, body {
-    @apply h-full overflow-hidden;
+    @apply h-full;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
   
   * {
@@ -188,4 +196,148 @@ textarea:focus {
 /* Ensure modals appear above everything */
 [role="dialog"] {
   z-index: 9999 !important;
+}
+
+.title-text {
+  color: white;
+  margin: 0;
+}
+
+/* Header styles */
+.header-container {
+  margin-bottom: 1rem;
+  background-color: #3a405a;
+  padding: 1rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.menu-button {
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.menu-button:hover {
+  background-color: #1d4ed8;
+}
+
+.menu-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+.accessibility-button {
+  padding: 0.25rem 0.75rem;
+  background-color: #374151;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.accessibility-button:hover {
+  background-color: #4b5563;
+}
+
+.accessibility-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Responsive utilities */
+.responsive-container {
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .responsive-container {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-container {
+    padding: 2rem;
+  }
+}
+
+/* Game canvas responsive */
+.game-canvas-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Ensure modals are responsive */
+.modal-overlay {
+  padding: 1rem;
+}
+
+@media (max-width: 640px) {
+  .modal-content {
+    max-height: 95vh;
+    width: 100%;
+    margin: 0.5rem;
+  }
+
+  .header-title {
+    font-size: 1.25rem;
+  }
+
+  .game-canvas-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Main container scroll improvements */
+  .main-container {
+    overflow-y: auto;
+    height: 100vh;
+  }
+
+  /* Custom scrollbar for better UX */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #374151;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #6b7280;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
 }

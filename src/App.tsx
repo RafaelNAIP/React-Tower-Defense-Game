@@ -8,6 +8,7 @@ import { TowerInfo } from './ui/TowerInfo';
 import { GameStats } from './ui/GameStats';
 import { KeyboardHandler, KeyboardShortcuts } from './ui/KeyboardHandler';
 import { AccessibilitySettings, LiveAnnouncer, useAccessibilitySettings } from './ui/AccessibilitySettings';
+import { SideMenu } from './ui/SideMenu';
 import './App.css';
 
 const TILE_SIZE = GAME_CONFIG.tileSize;
@@ -28,17 +29,24 @@ function App() {
   const { settings } = useAccessibilitySettings();
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
   const [showAccessibilitySettings, setShowAccessibilitySettings] = useState(false);
+  const [showSideMenu, setShowSideMenu] = useState(false);
 
   // Handle global keyboard shortcuts
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      // Help shortcut
+      // Help shortcut - now opens side menu
       if (event.key === '?' && !event.ctrlKey && !event.metaKey) {
         event.preventDefault();
-        setShowKeyboardHelp(true);
+        setShowSideMenu(true);
       }
-      
-      // Accessibility settings shortcut
+
+      // Menu shortcut
+      if (event.key === 'm' && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        setShowSideMenu(true);
+      }
+
+      // Accessibility settings shortcut (still available separately)
       if (event.key === 'a' && (event.ctrlKey || event.metaKey) && event.shiftKey) {
         event.preventDefault();
         setShowAccessibilitySettings(true);
@@ -111,8 +119,8 @@ function App() {
   return (
     <>
       {/* Main App Content */}
-      <div 
-        className="min-h-screen bg-gray-900 text-white p-4"
+      <div
+        className="min-h-screen bg-gray-900 text-white overflow-auto"
         data-reduce-motion={settings.reduceMotion}
       >
         {/* Accessibility Components */}
@@ -127,33 +135,33 @@ function App() {
           Skip to main game
         </a>
 
-        <header className="mb-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Tower Defense - Accessible Edition</h1>
+        <header className="mb-4 bg-[#3a405a] p-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <h1 className="text-xl sm:text-2xl font-bold text-white text-center sm:text-left">Tower Defense - Accessible Edition</h1>
             <div className="flex gap-2">
               <button
-                onClick={() => setShowKeyboardHelp(true)}
-                className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm focus:ring-2 focus:ring-blue-400"
-                aria-label="Show keyboard shortcuts help"
-                title="Press ? for help"
+                onClick={() => setShowSideMenu(true)}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-sm font-semibold focus:ring-2 focus:ring-blue-400"
+                aria-label="Open game menu with help, settings, and controls"
+                title="Press ? or Ctrl+M for menu"
               >
-                Help (?)
+                📋 Menu
               </button>
               <button
                 onClick={() => setShowAccessibilitySettings(true)}
                 className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm focus:ring-2 focus:ring-blue-400"
-                aria-label="Open accessibility settings"
+                aria-label="Quick accessibility settings"
                 title="Ctrl+Shift+A"
               >
-                ♿ Settings
+                ♿
               </button>
             </div>
           </div>
         </header>
         
-        <main id="main-game" className="flex gap-6" role="main">
+        <main id="main-game" className="flex flex-col lg:flex-row gap-4 lg:gap-6 px-4 overflow-y-auto" role="main">
           {/* Game Area */}
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-1 order-2 lg:order-1">
             {/* HUD */}
             <div className="mb-4">
               <Hud />
@@ -161,9 +169,9 @@ function App() {
                 {getTileInfo()}
               </div>
             </div>
-            
+
             {/* Game Canvas */}
-            <div role="application" aria-label="Tower Defense Game Field">
+            <div role="application" aria-label="Tower Defense Game Field" className="flex justify-center">
               <div className="sr-only" aria-live="polite">
                 Game field: Use arrow keys to navigate, Enter to build towers, Tab to access controls
               </div>
@@ -174,9 +182,9 @@ function App() {
               />
             </div>
           </div>
-          
+
           {/* UI Panel */}
-          <aside className="flex flex-col gap-4 min-w-[300px]" aria-label="Game Controls and Information">
+          <aside className="w-full lg:w-80 flex flex-col gap-4 order-1 lg:order-2" aria-label="Game Controls and Information">
             {/* Tower Building */}
             <BuildBar />
 
@@ -185,27 +193,18 @@ function App() {
 
             {/* Game Statistics */}
             <GameStats />
-
-            {/* Architecture Info */}
-            <div className="bg-blue-900/20 p-4 rounded">
-              <h3 className="font-bold mb-2 text-blue-400">♿ Accessibility Features</h3>
-              <ul className="text-xs space-y-1 text-blue-300">
-                <li>✅ Full keyboard navigation</li>
-                <li>✅ Screen reader support</li>
-                <li>✅ Focus management</li>
-                <li>✅ Reduced motion options</li>
-                <li>✅ ARIA labels and roles</li>
-                <li>✅ Live status updates</li>
-              </ul>
-            </div>
           </aside>
         </main>
       </div>
 
       {/* Modal Dialogs - Rendered at root level for proper overlay */}
-      <KeyboardShortcuts 
-        isVisible={showKeyboardHelp} 
-        onClose={() => setShowKeyboardHelp(false)} 
+      <SideMenu
+        isOpen={showSideMenu}
+        onClose={() => setShowSideMenu(false)}
+      />
+      <KeyboardShortcuts
+        isVisible={showKeyboardHelp}
+        onClose={() => setShowKeyboardHelp(false)}
       />
       <AccessibilitySettings
         isOpen={showAccessibilitySettings}
